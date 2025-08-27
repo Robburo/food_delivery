@@ -16,8 +16,8 @@ class SecurityConfig {
             .csrf { it.disable() }
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/actuator/health").permitAll()
-                    .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers("/actuator/**").permitAll()
+                    .anyRequest().hasRole("ADMIN")
                     .anyRequest().authenticated()
             }
             .oauth2ResourceServer { oauth2 ->

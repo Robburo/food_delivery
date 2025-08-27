@@ -17,7 +17,7 @@ class SecurityConfig {
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers("/actuator/health").permitAll()
-                    .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers("/api/deliveries/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             }
             .oauth2ResourceServer { oauth2 ->
