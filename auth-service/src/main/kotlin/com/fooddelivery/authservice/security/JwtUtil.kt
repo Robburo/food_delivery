@@ -2,17 +2,20 @@ package com.fooddelivery.authservice.security
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.*
+import javax.crypto.SecretKey
 
 @Component
 class JwtUtil(
-    private val rsaKeyProvider: RsaKeyProvider
+    @Value("\${jwt.secret}") secret: String,
+    @Value("\${jwt.issuer}") private val issuer: String,
+    @Value("\${jwt.expiration}") private val expirationMillis: Long
 ) {
-    private val privateKey = rsaKeyProvider.keyPair.private
-    private val publicKey = rsaKeyProvider.keyPair.public
-    private val issuer = "food-delivery-auth"
-    private val expirationMillis: Long = 3600000 // 1 hour
+
+    private val key: SecretKey = Keys.hmacShaKeyFor(secret.toByteArray())
 
     fun generateToken(username: String, role: String): String {
         val now = Date()
@@ -24,9 +27,7 @@ class JwtUtil(
             .setIssuer(issuer)
             .setIssuedAt(now)
             .setExpiration(expiry)
-            .signWith(privateKey, SignatureAlgorithm.RS256)
+            .signWith(key, SignatureAlgorithm.HS256)   // ✅ HMAC instead of RSA
             .compact()
     }
-
-    fun getPublicKey() = publicKey
 }

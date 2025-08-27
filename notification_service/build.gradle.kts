@@ -23,9 +23,9 @@ dependencies {
     // Spring Boot starters
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-jose")
+    implementation("org.springframework.kafka:spring-kafka")
 
     // Kotlin + Jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

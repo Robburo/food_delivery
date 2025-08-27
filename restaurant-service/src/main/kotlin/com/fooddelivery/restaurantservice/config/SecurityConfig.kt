@@ -1,14 +1,19 @@
 package com.fooddelivery.restaurantservice.config
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
+import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.security.web.SecurityFilterChain
+import javax.crypto.spec.SecretKeySpec
 
 @Configuration
 class SecurityConfig {
+
+    @Autowired
+    private lateinit var jwtProperties: JwtProperties
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -21,19 +26,15 @@ class SecurityConfig {
                     .anyRequest().authenticated()
             }
             .oauth2ResourceServer { oauth2 ->
-                oauth2.jwt { jwt ->
-                    jwt.jwtAuthenticationConverter(jwtAuthConverter())
+                oauth2.jwt {
                 }
             }
         return http.build()
     }
 
-    private fun jwtAuthConverter(): JwtAuthenticationConverter {
-        val converter = JwtAuthenticationConverter()
-        val granted = JwtGrantedAuthoritiesConverter()
-        granted.setAuthorityPrefix("ROLE_")     // prepend ROLE_
-        granted.setAuthoritiesClaimName("role") // map from JWT "role" claim
-        converter.setJwtGrantedAuthoritiesConverter(granted)
-        return converter
+    @Bean
+    fun jwtDecoder(): JwtDecoder {
+        val key = SecretKeySpec(jwtProperties.secret.toByteArray(), "HmacSHA256")
+        return NimbusJwtDecoder.withSecretKey(key).build()
     }
 }
