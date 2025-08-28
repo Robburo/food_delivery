@@ -93,7 +93,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-order:5432/fd_order_service_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
 
   restaurant-service:
     build: ./restaurant-service
@@ -107,7 +107,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-restaurant:5432/fd_restaurant_service_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
 
   delivery-service:
     build: ./delivery-service
@@ -121,7 +121,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-delivery:5432/fd_delivery_service_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
 
   payment-service:
     build: ./payment-service
@@ -135,7 +135,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-payment:5432/fd_payment_service_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
 
   notification-service:
     build: ./notification-service
@@ -145,4 +145,19 @@ services:
     depends_on:
       - kafka
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:29092
+
+  # === LOG VIEWER (GUI) ===
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    ports:
+      - "9999:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - order-service
+      - restaurant-service
+      - delivery-service
+      - payment-service
+      - notification-service

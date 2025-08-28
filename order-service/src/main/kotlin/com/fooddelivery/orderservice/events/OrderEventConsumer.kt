@@ -1,6 +1,5 @@
 package com.fooddelivery.orderservice.events
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fooddelivery.orderservice.domain.OrderStatus
 import com.fooddelivery.orderservice.repository.OrderRepository
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -11,8 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class OrderEventConsumer(
-    private val orderRepository: OrderRepository,
-    private val objectMapper: ObjectMapper
+    private val orderRepository: OrderRepository
 ) {
     private val log = LoggerFactory.getLogger(OrderEventConsumer::class.java)
 
