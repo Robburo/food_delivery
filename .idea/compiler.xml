@@ -5,9 +5,6 @@
       <module name="notification_service" target="21" />
       <module name="notification_service.main" target="21" />
       <module name="notification_service.test" target="21" />
-      <module name="payment-service" target="21" />
-      <module name="payment-service.main" target="21" />
-      <module name="payment-service.test" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
