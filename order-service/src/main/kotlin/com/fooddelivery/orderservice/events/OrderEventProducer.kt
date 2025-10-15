@@ -15,7 +15,29 @@ class OrderEventProducer(
 
     fun sendOrderPlaced(event: OrderPlacedEvent) {
         val message = objectMapper.writeValueAsString(event)
-        kafkaTemplate.send(topic, event.orderId.toString(), message)
-        log.info("Sent order placed event: {}", message)
+        val future = kafkaTemplate.send(topic, event.orderId.toString(), message)
+
+        future.whenComplete { result, ex ->
+            if (ex == null) {
+                val meta = result.recordMetadata
+                log.info(
+                    "Successfully sent order event. topic={}, partition={}, offset={}, key={}, message={}",
+                    meta.topic(),
+                    meta.partition(),
+                    meta.offset(),
+                    event.orderId,
+                    message
+                )
+            } else {
+                log.error(
+                    "Failed to send order event. topic={}, key={}, message={}",
+                    topic,
+                    event.orderId,
+                    message,
+                    ex
+                )
+            }
+        }
     }
 }
+
